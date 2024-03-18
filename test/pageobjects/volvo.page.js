@@ -3,11 +3,6 @@ class VolvoPage {
     return browser.getTitle();
   }
 
-  open() {
-    browser.url("/");
-    browser.pause(2000);
-  }
-
   get cookiesBanner() {
     return $(".ot-sdk-container");
   }
@@ -24,7 +19,7 @@ class VolvoPage {
     return $("#onetrust-pc-btn-handler");
   }
 
-  get cookieSettings() {
+  get cookiesSettings() {
     return $(".ot-sdk-container");
   }
 
@@ -52,7 +47,7 @@ class VolvoPage {
     return $$(".icon-sprite");
   }
 
-  get cookie() {
+  get cookies() {
     return browser
       .getCookies(["OptanonConsent", "OptanonAlertBoxClosed"])
       .then(function (cookie) {
@@ -60,24 +55,64 @@ class VolvoPage {
       });
   }
 
-  acceptCookies() {
+  async open() {
+    browser.url("/");
+    await browser.waitUntil(async () => () => this.title.isDisplayed(), {
+      timeout: 5000,
+      timeoutMsg: "Expected page to be loaded after 5s",
+    });
+  }
+
+  async acceptCookies() {
     this.acceptButton.click();
-    browser.pause(1000);
+
+    // Wait for the cookies banner to disappear
+    await browser.waitUntil(
+      async () => {
+        const isDisplayed = await this.cookiesBanner.isDisplayed();
+        return !isDisplayed;
+      },
+      {
+        timeout: 5000, // The function will try up to 5 seconds.
+        timeoutMsg: "Expected cookies banner to be gone after 5s",
+      }
+    );
   }
 
-  rejectCookies() {
+  async rejectCookies() {
     this.rejectButton.click();
-    browser.pause(1000);
+    await browser.waitUntil(
+      async () => {
+        const isDisplayed = await this.cookiesBanner.isDisplayed();
+        return !isDisplayed;
+      },
+      {
+        timeout: 5000, // The function will try up to 5 seconds.
+        timeoutMsg: "Expected cookies banner to be gone after 5s",
+      }
+    );
   }
 
-  openCookieSettings() {
+  async openCookiesSettings() {
     this.cookieSettingsButton.click();
-    browser.pause(1000);
+    await browser.waitUntil(
+      async () => {
+        const isDisplayed = await this.cookiesBanner.isDisplayed();
+        return !isDisplayed;
+      },
+      {
+        timeout: 5000, // The function will try up to 5 seconds.
+        timeoutMsg: "Expected cookies banner to be gone after 5s",
+      }
+    );
   }
 
-  clickHighlights() {
+  async clickHighlights() {
     this.HighlightsElement.click();
-    browser.pause(1000);
+    await browser.waitUntil(() => browser.getUrl() !== currentUrl, {
+      timeout: 5000, // The function will try up to 5 seconds.
+      timeoutMsg: "Expected URL to change after 5s",
+    });
   }
 
   getCurrentUrl() {

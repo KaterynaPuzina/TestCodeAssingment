@@ -14,8 +14,6 @@ describe("Volvo Test", () => {
         "Volvo Cars | A Million More | Volvo Cars Global"
       );
     });
-
-    browser.pause(10000);
   });
 
   // Test case to verify the presence of cookies banner.
@@ -42,44 +40,44 @@ describe("Volvo Test", () => {
   });
 
   // Test case to verify the behavior of accepting cookies.
-  it("Should click on Accept and cookies window should disappear", () => {
-    VolvoPage.cookiesBanner.then((cookiesBanner) => {
-      VolvoPage.acceptCookies();
+  it("Should click on Accept and cookies window should disappear", async () => {
+    const cookiesBanner = await VolvoPage.cookiesBanner;
+    await VolvoPage.acceptCookies();
 
-      // Check if the cookies banner is not present
-      expect(cookiesBanner).not.toBeExisting();
+    // Check if the cookies banner is not present
+    expect(cookiesBanner).not.toBeExisting();
 
-      // Check if a cookie has been set
-      VolvoPage.cookie.then((cookie) => {
-        expect(cookie.length).toBeGreaterThan(0);
-      });
+    // Check if a cookie has been set
+    VolvoPage.cookies.then((cookies) => {
+      expect(cookies.length).toBeGreaterThan(0);
     });
   });
 
   // Test case to verify the behavior of rejecting cookies.
-  it("Should reject cookies", () => {
-    VolvoPage.cookiesBanner.then((cookiesBanner) => {
-      VolvoPage.rejectCookies();
-      expect(cookiesBanner).not.toBeExisting();
-      // Check if a cookie has not been set (rejected)
-      VolvoPage.cookie.then((cookie) => {
-        expect(cookie.length).toBe(0);
-      });
+  it("Should reject cookies", async () => {
+    const cookiesBanner = await VolvoPage.cookiesBanner;
+    await VolvoPage.rejectCookies();
+
+    // Check if the cookies banner is not present
+    expect(cookiesBanner).not.toBeExisting();
+
+    // Check if a cookie has not been set (rejected)
+    VolvoPage.cookies.then((cookie) => {
+      expect(cookie.length).toBe(0);
     });
   });
 
   // Test case to verify the behavior of clicking on Cookie Settings.
-  it("Should click on Cookie Settings", () => {
-    VolvoPage.cookiesBanner.then((cookiesBanner) => {
-      VolvoPage.openCookieSettings();
+  it("Should click on Cookie Settings", async () => {
+    const cookiesBanner = await VolvoPage.cookiesBanner;
+    VolvoPage.openCookiesSettings();
 
-      // Check if the cookies banner is not present
-      expect(cookiesBanner).not.toBeExisting();
+    // Check if the cookies banner is not present
+    expect(cookiesBanner).not.toBeExisting();
 
-      // Check if the cookies settings are present
-      VolvoPage.cookiesSettings.then((cookiesSettings) => {
-        expect(cookiesSettings).toBeExisting();
-      });
+    // Check if the cookies settings are present
+    VolvoPage.cookiesSettings.then((cookiesSettings) => {
+      expect(cookiesSettings).toBeExisting();
     });
   });
 
